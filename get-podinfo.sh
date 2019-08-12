@@ -12,7 +12,7 @@ then
 else
     namespace="default"
 fi
-
+kc=$(ls ./output/kubeconfig*)
 clear
 echo ""
 echo "Search restricted to namespace: $namespace"
@@ -20,7 +20,7 @@ echo ""
 unset options i
 i=0
 howmany() { echo $#; }  #https://stackoverflow.com/questions/638802/number-of-tokens-in-bash-variable
-mytextvar=$(kubectl get po -n $namespace)
+mytextvar=$(kubectl --kubeconfig=$kc get po -n $namespace)
 words=$(howmany $mytextvar)
 if [ $words == 0 ]
 then
@@ -43,10 +43,10 @@ select opt in "${options[@]}" "Stop the script"; do
     *-*)
       echo ""
       echo "Information for: $opt"
-#      info1=$(kubectl describe po $opt -n $namespace)
-      loginfo=$(kubectl describe po $opt -n $namespace| grep "Container ID:"| awk '{ gsub(/docker:\/\//, "" ); print $3; }')
-      statusinfo1=$(kubectl describe po $opt -n $namespace| grep "Status:"| awk '{print $NF}')
-      readyinfo1=$(kubectl describe po $opt -n $namespace| grep "Ready:"| awk '{print $NF}')
+#      info1=$(kubectl --kubeconfig=$kc describe po $opt -n $namespace)
+      loginfo=$(kubectl --kubeconfig=$kc describe po $opt -n $namespace| grep "Container ID:"| awk '{ gsub(/docker:\/\//, "" ); print $3; }')
+      statusinfo1=$(kubectl --kubeconfig=$kc describe po $opt -n $namespace| grep "Status:"| awk '{print $NF}')
+      readyinfo1=$(kubectl --kubeconfig=$kc describe po $opt -n $namespace| grep "Ready:"| awk '{print $NF}')
       echo "POD Status     : $statusinfo1"
       echo "Ready Status   : $readyinfo1"
       echo "CloudWatch log : $loginfo"

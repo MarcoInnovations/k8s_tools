@@ -6,6 +6,8 @@
 #   2)  functioning kubectl configuration
 #   3)  
 
+kc=$(ls ./output/kubeconfig*)
+
 if [ $# == 1 ]
 then
     namespace=$1
@@ -15,10 +17,10 @@ fi
 
 clear
 howmany() { echo $#; }  #https://stackoverflow.com/questions/638802/number-of-tokens-in-bash-variable
-context=$(kubectl config view |grep "current-context:"| awk '{ print $NF }')
+context=$(kubectl --kubeconfig=$kc config view |grep "current-context:"| awk '{ print $NF }')
 echo ">>  k8s cluster name: $context"
-mymasters=$(kubectl get nodes | grep master)
-mynodes=$(kubectl get nodes | grep node)
+mymasters=$(kubectl --kubeconfig=$kc get nodes | grep master)
+mynodes=$(kubectl --kubeconfig=$kc get nodes | grep node)
 masters=$(howmany $mymasters)
 if [ $masters == 0 ]
 then
@@ -63,7 +65,7 @@ mytextvar=$(kubectl get namespaces)
 words=$(howmany $mytextvar)
 if [ $words == 0 ]
 then
-    echo "Please check your kubectl configuration."
+    echo "Please check your kubectl --kubeconfig=$kc configuration."
     exit 1
 fi
 h=$(((words / 3) -1))
@@ -78,12 +80,12 @@ echo ">>  User Configured Namespaces:"
 printf '    * %s\n' "${options[@]}"
 unset options i z h mytextvar words
 echo ">>  User Configured Services:"
-kubectl get services --all-namespaces |grep -v "kube-system"
+kubectl --kubeconfig=$kc get services --all-namespaces |grep -v "kube-system"
 echo ">>  User Configured ReplicaSets:"
-kubectl get ReplicaSets --all-namespaces |grep -v "kube-system"
+kubectl --kubeconfig=$kc get ReplicaSets --all-namespaces |grep -v "kube-system"
 echo ">>  User Configured Deployments:"
-kubectl get deployments --all-namespaces |grep -v "kube-system"
+kubectl --kubeconfig=$kc get deployments --all-namespaces |grep -v "kube-system"
 echo ">>  Running Pods:"
-kubectl get pods --all-namespaces |grep -v "kube-system"
+kubectl --kubeconfig=$kc get pods --all-namespaces |grep -v "kube-system"
 
 exit

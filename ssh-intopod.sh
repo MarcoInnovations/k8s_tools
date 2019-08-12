@@ -12,6 +12,7 @@ then
 else
     namespace="default"
 fi
+kc=$(ls ./output/kubeconfig*)
 
 clear
 echo ""
@@ -20,7 +21,7 @@ echo ""
 unset options i
 i=0
 howmany() { echo $#; }  #https://stackoverflow.com/questions/638802/number-of-tokens-in-bash-variable
-mytextvar=$(kubectl get po -n $namespace)
+mytextvar=$(kubectl --kubeconfig=$kc get po -n $namespace)
 words=$(howmany $mytextvar)
 if [ $words == 0 ]
 then
@@ -43,10 +44,10 @@ select opt in "${options[@]}" "Stop the script"; do
     *-*)
       echo ""
       echo "Connecting to:  $opt"
-      kubectl exec -ti $opt -n $namespace -- /bin/bash
+      kubectl --kubeconfig=$kc exec -ti $opt -n $namespace -- /bin/bash
       rc=$?
       if (( rc > 0 )); then
-        kubectl exec -ti $opt -n $namespace -- /bin/sh
+        kubectl --kubeconfig=$kc exec -ti $opt -n $namespace -- /bin/sh
         rc=$?
         if (( rc > 0 )); then
           echo "Unable to attach to selected pod"

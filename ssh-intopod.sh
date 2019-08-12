@@ -1,10 +1,11 @@
-#! /bin/bash
-# provide information about running pods
+#!/bin/bash
+# provide information about running kubernetes cluster
 
 # prereq: 
 #   1)  kubectl installed
 #   2)  functioning kubectl configuration
-#   3)  
+#   3)  expecting kubeconfig in ./output folder
+#   4)  .....
 
 if [ $# == 1 ]
 then

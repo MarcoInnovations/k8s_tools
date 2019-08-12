@@ -4,7 +4,8 @@
 # prereq: 
 #   1)  kubectl installed
 #   2)  functioning kubectl configuration
-#   3)  
+#   3)  expecting kubeconfig in ./output folder
+#   4)  .....
 
 kc=$(ls ./output/kubeconfig* 2>/dev/null)
 
